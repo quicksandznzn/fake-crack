@@ -5,3 +5,4 @@ selenium==3.141.0
 requests==2.24.0
 pandas==1.1.5
 opencv-python==4.5.4.60
+fonttools==4.28.5
