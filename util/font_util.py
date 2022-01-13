@@ -71,7 +71,7 @@ def font_map(font_path):
 if __name__ == "__main__":
     # 1.4
     test_str = "&#58397;.&#60492;"
-    font_list = font_map("../file/font/gzfont2.woff2", )
+    font_list = font_map("../file/font/font2.woff2", )
     print(font_list)
     for font in font_list:
         test_str = test_str.replace(font["id"], font["num"])
