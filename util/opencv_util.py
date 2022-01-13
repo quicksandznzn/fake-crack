@@ -43,8 +43,8 @@ def opencv_match_template_coord(bg_path, slide_block_path, tmp_path):
     # cv2.circle(result, max_loc, 10, 0, 2)
     # 画矩形|
     cv2.rectangle(bg, max_loc, bottom_right, (0, 255, 0), 2)
-    plt.subplot(121), plt.imshow(result, cmap='gray')
-    plt.subplot(122), plt.imshow(bg, cmap='gray')
+    plt.subplot(121), plt.imshow(result, cmap="gray")
+    plt.subplot(122), plt.imshow(bg, cmap="gray")
     plt.show()
 
     return x, y
@@ -59,14 +59,16 @@ def download_image(filepath, img_url):
     """
     response = requests.get(url=img_url)
     new_im: Image = Image.open(BytesIO(response.content))
-    new_im.convert('RGB')
+    new_im.convert("RGB")
     new_im.save(filepath)
     return new_im
 
 
-if __name__ == '__main__':
-    bg_path = '../file/bg.png'
-    slide_block_path = '../file/block.png'
-    tmp_path = '../file/tmp.png'
-    x, y = opencv_match_template_coord(bg_path=bg_path, slide_block_path=slide_block_path, tmp_path=tmp_path)
+if __name__ == "__main__":
+    bg_path = "../file/image/bg.png"
+    slide_block_path = "../file/image/block.png"
+    tmp_path = "../file/tmp.png"
+    x, y = opencv_match_template_coord(
+        bg_path=bg_path, slide_block_path=slide_block_path, tmp_path=tmp_path
+    )
     print(x, y)
