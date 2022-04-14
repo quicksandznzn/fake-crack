@@ -1,6 +1,8 @@
 import base64
-from pyDes import des, CBC, PAD_PKCS5
 import hashlib
+
+from pyDes import des, CBC, PAD_PKCS5
+
 
 def des_cbc_encrypt_text(decrypt_text: str, key: str, iv: str) -> str:
     """
@@ -64,3 +66,25 @@ def get_sign(params, app_key):
     sign_str = app_key + sign_str + app_key
     sign = hashlib.md5(sign_str.encode(encoding="utf-8")).hexdigest()
     return sign
+
+
+def encrypt_ascii(e):
+    """
+        encrypt_ascii
+    """
+    result = ""
+    for i in e:
+        result += hex(5 ^ ord(i))[2:]
+    return result
+
+
+def decode_ascii(e):
+    """
+        decode_ascii
+    """
+    e = [e[i:i + 2] for i in range(0, len(e), 2)]
+    result = ''
+    for i in e:
+        a = int(i, 16)
+        result += chr(5 ^ a)
+    return result
