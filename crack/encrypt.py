@@ -1,36 +1,28 @@
 import base64
 import hashlib
 
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
 from pyDes import des, CBC, PAD_PKCS5
 
 
-def des_cbc_encrypt_text(decrypt_text: str, key: str, iv: str) -> str:
+def encrypt_des_cbc(text, key, iv):
     """
-    加密DES_CBC明文
-    :param decrypt_text: 明文
-    :param key: 密钥
-    :param iv: 密钥偏移量
-    :return: 加密后的数据
+    encrypt_des_cbc
     """
     des_obj = des(
         key[:8].encode("utf-8"), CBC, iv.encode("utf-8"), pad=None, padmode=PAD_PKCS5
     )
-    encrypt_text = des_obj.encrypt(decrypt_text)
-    encrypt_text = str(base64.encodebytes(encrypt_text), encoding="utf-8").replace(
-        "\n", ""
-    )
+    encrypt_text = des_obj.encrypt(text)
+    encrypt_text = base64.encodebytes(encrypt_text).decode("utf-8").replace("\n", "")
     return encrypt_text
 
 
-def decrypt_des_cbc(encrypt_text: str, key: str, iv: str) -> str:
+def decrypt_des_cbc(text: str, key: str, iv: str) -> str:
     """
-    解密DES_CBC密文
-    :param encrypt_text: 密文
-    :param key: 秘钥
-    :param iv:秘钥便宜量
-    :return:解密后的数据
+    decrypt_des_cbc
     """
-    decode_encrypt_text = base64.b64decode(encrypt_text)
+    decode_encrypt_text = base64.b64decode(text)
     des_obj = des(
         key[:8].encode("utf-8"), CBC, iv.encode("utf-8"), pad=None, padmode=PAD_PKCS5
     )
@@ -82,9 +74,28 @@ def decode_ascii(e):
     """
         decode_ascii
     """
-    e = [e[i:i + 2] for i in range(0, len(e), 2)]
-    result = ''
+    e = [e[i : i + 2] for i in range(0, len(e), 2)]
+    result = ""
     for i in e:
         a = int(i, 16)
         result += chr(5 ^ a)
     return result
+
+
+def encrypt_aes_cbc(text, key, iv):
+    """
+    encrypt_aes_cbc
+    """
+    aes = AES.new(key.encode("utf-8"), AES.MODE_CBC, iv.encode("utf-8"))
+    encrypt_text = aes.encrypt(pad(text.encode("utf-8"), AES.block_size, style="pkcs7"))
+    return encrypt_text.hex()
+
+
+def decrypt_aes_cbc(text, key, iv):
+    """
+        decrypt_aes_cbc
+    """
+    enc = bytes.fromhex(text)
+    aes = AES.new(key.encode("utf-8"), AES.MODE_CBC, iv.encode("utf-8"))
+    encrypt_text = aes.decrypt(enc)
+    return unpad(encrypt_text, AES.block_size, style="pkcs7").decode("utf-8")
