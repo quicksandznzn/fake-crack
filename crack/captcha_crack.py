@@ -1,10 +1,11 @@
-import cv2
-import numpy as np
-from matplotlib import pyplot as plt
-import requests
-from PIL import Image
 from io import BytesIO
 
+import cv2
+import numpy as np
+import requests
+from PIL import Image
+from matplotlib import pyplot as plt
+import random
 
 def opencv_match_template_coord(bg_path, slide_block_path, tmp_path):
     """
@@ -64,11 +65,48 @@ def download_image(filepath, img_url):
     return new_im
 
 
+def ease_out_quad( x):
+    return 1 - (1 - x) * (1 - x)
+
+
+def ease_out_quart( x):
+    return 1 - pow(1 - x, 4)
+
+
+def ease_out_expo( x):
+    if x == 1:
+        return 1
+    else:
+        return 1 - pow(2, -10 * x)
+
+
+def get_tracks(distance, seconds, ease_func):
+    """
+    :param distance: 缺口位置
+    :param seconds:  时间
+    :param ease_func: 生成函数
+    :return: 轨迹数组
+    """
+    distance += 20
+    tracks = [0]
+    offsets = [0]
+    for t in np.arange(0.0, seconds, 0.1):
+        ease = ease_func
+        offset = round(ease(t / seconds) * distance)
+        tracks.append(offset - offsets[-1])
+        offsets.append(offset)
+    tracks.extend([-3, -2, -3, -2, -2, -2, -2, -1, -0, -1, -1, -1])
+    return tracks
+
+
 if __name__ == "__main__":
-    bg_path = "../file/image/bg.png"
-    slide_block_path = "../file/image/block.png"
-    tmp_path = "../file/tmp.png"
-    x, y = opencv_match_template_coord(
-        bg_path=bg_path, slide_block_path=slide_block_path, tmp_path=tmp_path
-    )
-    print(x, y)
+    # bg_path = "../file/image/bg.png"
+    # slide_block_path = "../file/image/block.png"
+    # tmp_path = "../file/tmp.png"
+    # x, y = opencv_match_template_coord(
+    #     bg_path=bg_path, slide_block_path=slide_block_path, tmp_path=tmp_path
+    # )
+    # print(x, y)
+
+    result = get_tracks(354,random.randint(2, 4),ease_out_expo)
+    print(result)
